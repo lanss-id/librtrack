@@ -1,0 +1,20 @@
+# Docker volumes & build cache
+.docker/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# PHP logs
+*.log
+
+# Environment secrets (jangan commit!)
+.env
+.env.local

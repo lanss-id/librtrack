@@ -1,0 +1,66 @@
+version: '3.9'
+
+services:
+  # ── PHP + Apache ────────────────────────────────────────────
+  app:
+    build: .
+    container_name: libtrack_app
+    restart: unless-stopped
+    ports:
+      - "8080:80"           # akses: http://localhost:8080/libtrack
+    volumes:
+      - .:/var/www/html/libtrack
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_NAME: libtrack_db
+      DB_USER: root
+      DB_PASS: root
+    networks:
+      - libtrack_net
+
+  # ── MySQL ────────────────────────────────────────────────────
+  db:
+    image: mysql:8.0
+    container_name: libtrack_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: libtrack_db
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database.sql:/docker-entrypoint-initdb.d/database.sql:ro
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - libtrack_net
+
+  # ── phpMyAdmin (opsional) ────────────────────────────────────
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: libtrack_pma
+    restart: unless-stopped
+    ports:
+      - "8081:80"           # akses: http://localhost:8081
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: root
+    depends_on:
+      - db
+    networks:
+      - libtrack_net
+
+volumes:
+  db_data:
+
+networks:
+  libtrack_net:
+    driver: bridge
