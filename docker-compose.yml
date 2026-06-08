@@ -29,6 +29,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: libtrack_db
+      MYSQL_ROOT_HOST: '%'
     volumes:
       - db_data:/var/lib/mysql
       - ./database.sql:/docker-entrypoint-initdb.d/database.sql:ro
