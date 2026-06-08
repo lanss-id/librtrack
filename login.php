@@ -73,7 +73,7 @@ $remaining = $lockoutTime - (time() - $_SESSION['login_last_attempt']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login &mdash; LibTrack ERP</title>
+    <title>Login &mdash; LibTrack</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -103,7 +103,7 @@ $remaining = $lockoutTime - (time() - $_SESSION['login_last_attempt']);
             <div class="lt-login-logo">
                 <i class="bi bi-book-half"></i>
             </div>
-            <h1 class="lt-login-title">LibTrack ERP</h1>
+            <h1 class="lt-login-title">LibTrack</h1>
             <p class="lt-login-sub">Sistem Manajemen Perpustakaan Akademik</p>
         </div>
 

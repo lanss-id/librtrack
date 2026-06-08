@@ -20,7 +20,7 @@ $navItems = [
             <div class="lt-sidebar-logo"><i class="bi bi-book-half"></i></div>
             <div>
                 <div class="lt-sidebar-brand-name">LibTrack</div>
-                <div class="lt-sidebar-brand-sub">ERP System</div>
+                <div class="lt-sidebar-brand-sub">Library System</div>
             </div>
         </div>
 
@@ -71,7 +71,7 @@ $navItems = [
         <button class="lt-menu-btn" id="sidebarToggle">
             <i class="bi bi-list"></i>
         </button>
-        <span class="lt-topbar-brand">LibTrack ERP</span>
+        <span class="lt-topbar-brand">LibTrack</span>
         <span class="lt-topbar-date"><?= date('d M Y') ?></span>
     </div>
 
