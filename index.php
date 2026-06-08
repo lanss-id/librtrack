@@ -177,38 +177,38 @@ ob_start();
             <div class="lt-card-header">
                 <h2 class="lt-card-title"><i class="bi bi-pie-chart me-2 text-muted"></i>Ketersediaan</h2>
             </div>
-            <div class="lt-card-body">
+            <div class="lt-card-body" style="padding: 1.5rem 1.25rem;">
                 <?php
                 $pct = $stats['total_books'] > 0
                     ? round(($stats['available'] / $stats['total_books']) * 100)
                     : 0;
                 ?>
-                <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="d-flex align-items-center gap-3 mb-3">
                     <div style="flex:1">
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="lt-text-small">Tersedia</span>
+                            <span class="lt-text-small lt-fw-medium">Tersedia</span>
                             <span class="lt-text-small lt-fw-medium"><?= $stats['available'] ?></span>
                         </div>
-                        <div class="progress" style="height:8px; border-radius:99px; background:var(--lt-border)">
-                            <div class="progress-bar" role="progressbar"
-                                 style="width:<?= $pct ?>%; background:var(--lt-teal); border-radius:99px;"
+                        <div class="lt-progress">
+                            <div class="lt-progress-bar" role="progressbar"
+                                 style="width:<?= $pct ?>%; background:var(--teal);"
                                  aria-valuenow="<?= $pct ?>" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
-                    <span class="lt-badge lt-badge--available"><?= $pct ?>%</span>
+                    <span class="lt-badge lt-badge--available" style="width: 70px; justify-content: center;"><?= $pct ?>%</span>
                 </div>
                 <div class="d-flex align-items-center gap-3">
                     <div style="flex:1">
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="lt-text-small">Dipinjam</span>
+                            <span class="lt-text-small lt-fw-medium">Dipinjam</span>
                             <span class="lt-text-small lt-fw-medium"><?= $stats['borrowed'] ?></span>
                         </div>
-                        <div class="progress" style="height:8px; border-radius:99px; background:var(--lt-border)">
-                            <div class="progress-bar" role="progressbar"
-                                 style="width:<?= 100-$pct ?>%; background:var(--lt-amber); border-radius:99px;"></div>
+                        <div class="lt-progress">
+                            <div class="lt-progress-bar" role="progressbar"
+                                 style="width:<?= 100-$pct ?>%; background:var(--amber);"></div>
                         </div>
                     </div>
-                    <span class="lt-badge lt-badge--borrowed"><?= 100-$pct ?>%</span>
+                    <span class="lt-badge lt-badge--borrowed" style="width: 70px; justify-content: center;"><?= 100-$pct ?>%</span>
                 </div>
             </div>
         </div>
@@ -225,18 +225,18 @@ ob_start();
                 <ul class="list-unstyled mb-0">
                 <?php
                 $maxCat = max(array_column($categories, 'total'));
-                $colors = ['var(--lt-teal)','var(--lt-amber)','var(--lt-blue)','var(--lt-crimson)','#7C3AED','#059669','#DC2626','#2563EB'];
+                $colors = ['var(--teal)','var(--amber)','var(--blue)','var(--crimson)','#7C3AED','#059669','#DC2626','#2563EB'];
                 foreach ($categories as $i => $cat):
                     $barPct = round(($cat['total'] / $maxCat) * 100);
                     $clr    = $colors[$i % count($colors)];
                 ?>
-                <li style="padding:.65rem 1.25rem; border-bottom:1px solid var(--lt-border-light);">
+                <li style="padding:.65rem 1.25rem; border-bottom:1px solid var(--border-light);">
                     <div class="d-flex justify-content-between align-items-center mb-1">
                         <span class="lt-text-small lt-fw-medium"><?= e($cat['category']) ?></span>
                         <span class="lt-text-small lt-text-muted"><?= $cat['total'] ?> buku</span>
                     </div>
-                    <div class="progress" style="height:5px; border-radius:99px; background:var(--lt-border)">
-                        <div class="progress-bar" style="width:<?= $barPct ?>%; background:<?= $clr ?>; border-radius:99px;"></div>
+                    <div class="lt-progress" style="margin-top:0;">
+                        <div class="lt-progress-bar" style="width:<?= $barPct ?>%; background:<?= $clr ?>;"></div>
                     </div>
                 </li>
                 <?php endforeach; ?>
