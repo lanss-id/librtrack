@@ -55,7 +55,7 @@ ob_start();
 
     <div class="col-6 col-xl-3">
         <div class="lt-stat lt-stat--teal">
-            <div class="lt-stat-icon"><i class="bi bi-books"></i></div>
+            <div class="lt-stat-icon"><i class="bi bi-journals"></i></div>
             <div>
                 <div class="lt-stat-number"><?= $stats['total_books'] ?></div>
                 <div class="lt-stat-label">Total Buku</div>
