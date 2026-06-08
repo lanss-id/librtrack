@@ -15,7 +15,7 @@
 
 ```bash
 # Clone / masuk ke folder proyek
-cd joki_adink
+cd libtrack
 
 # Jalankan semua service (pertama kali agak lama karena download image)
 docker compose up -d
@@ -94,7 +94,7 @@ php -S localhost:8080 -t .
 ## 📁 Struktur Direktori
 
 ```
-joki_adink/  ← root (htdocs/libtrack/ untuk XAMPP)
+libtrack/  ← root (htdocs/libtrack/ untuk XAMPP)
 ├── index.php          ← Dashboard
 ├── login.php
 ├── logout.php
