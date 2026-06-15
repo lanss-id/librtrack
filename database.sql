@@ -71,6 +71,7 @@ CREATE TABLE IF NOT EXISTS transactions (
     return_date DATE          DEFAULT NULL,
     status      ENUM('Dipinjam','Dikembalikan') NOT NULL DEFAULT 'Dipinjam',
     notes       TEXT          DEFAULT NULL,
+    fine_amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     created_at  TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
@@ -83,12 +84,29 @@ CREATE TABLE IF NOT EXISTS transactions (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
+-- TABLE: settings
+-- ============================================================
+CREATE TABLE IF NOT EXISTS settings (
+    id            INT UNSIGNED  NOT NULL AUTO_INCREMENT,
+    setting_key   VARCHAR(100)  NOT NULL UNIQUE,
+    setting_value TEXT          NOT NULL,
+    updated_at    TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ============================================================
 -- SEED: Default Admin
 -- Password: admin123
 -- ============================================================
 -- Password: admin123  (bcrypt cost=10)
 INSERT INTO users (username, password, full_name, role) VALUES
 ('admin', '$2y$10$PE36nU6nDbjxoj2FK2rzpuY06wDs6wmlQpXUJp9dEDkhz2ua23eTm', 'Administrator', 'admin');
+
+-- ============================================================
+-- SEED: Default Settings
+-- ============================================================
+INSERT INTO settings (setting_key, setting_value) VALUES
+('fine_per_day', '1000');
 
 -- ============================================================
 -- SEED: Sample Books

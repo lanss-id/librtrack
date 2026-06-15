@@ -119,3 +119,41 @@ function generateMemberCode(PDO $pdo): string
     $next = ($row['max_id'] ?? 0) + 1;
     return 'MBR-' . str_pad($next, 3, '0', STR_PAD_LEFT);
 }
+
+// ── Currency ──────────────────────────────────────────────────
+
+function formatRupiah(float $amount): string
+{
+    return 'Rp ' . number_format($amount, 0, ',', '.');
+}
+
+// ── Settings ──────────────────────────────────────────────────
+
+function getSettingValue(PDO $pdo, string $key, string $default = ''): string
+{
+    $stmt = $pdo->prepare("SELECT setting_value FROM settings WHERE setting_key = ?");
+    $stmt->execute([$key]);
+    $row = $stmt->fetch();
+    return $row ? $row['setting_value'] : $default;
+}
+
+/**
+ * Calculate fine for a transaction.
+ * Returns [overdue_days, fine_amount].
+ */
+function calculateFine(PDO $pdo, string $dueDate, ?string $returnDate = null): array
+{
+    $finePerDay  = (float) getSettingValue($pdo, 'fine_per_day', '1000');
+    $endDate     = $returnDate ?: date('Y-m-d');
+    $overdueDays = max(0, daysOverdue($dueDate));
+
+    // If returned, calculate from actual return date
+    if ($returnDate) {
+        $due  = new DateTime($dueDate);
+        $ret  = new DateTime($returnDate);
+        $diff = $ret->diff($due);
+        $overdueDays = $diff->invert ? (int)$diff->days : 0;
+    }
+
+    return [$overdueDays, $overdueDays * $finePerDay];
+}

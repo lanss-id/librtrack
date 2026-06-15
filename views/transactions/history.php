@@ -1,6 +1,7 @@
 <?php
 /**
  * LibTrack ERP - Transactions: Full History
+ * Includes fine amount column.
  */
 
 require_once __DIR__ . '/../../config/database.php';
@@ -11,7 +12,7 @@ requireAuth();
 $pdo = getDB();
 
 $transactions = $pdo->query("
-    SELECT t.id, t.borrow_date, t.due_date, t.return_date, t.status, t.notes,
+    SELECT t.id, t.borrow_date, t.due_date, t.return_date, t.status, t.fine_amount, t.notes,
            m.name AS member_name, m.member_code,
            b.title AS book_title, b.author AS book_author, b.category
     FROM transactions t
@@ -50,6 +51,7 @@ ob_start();
                     <th>Jatuh Tempo</th>
                     <th>Tgl Kembali</th>
                     <th>Status</th>
+                    <th>Denda</th>
                 </tr>
             </thead>
             <tbody>
@@ -79,6 +81,13 @@ ob_start();
                     <span class="lt-badge lt-badge--overdue">Terlambat</span>
                     <?php else: ?>
                     <span class="lt-badge lt-badge--borrowed">Dipinjam</span>
+                    <?php endif; ?>
+                </td>
+                <td class="lt-text-small">
+                    <?php if ((float)$t['fine_amount'] > 0): ?>
+                    <span style="color:var(--crimson);font-weight:600"><?= formatRupiah((float)$t['fine_amount']) ?></span>
+                    <?php else: ?>
+                    <span class="lt-text-muted">—</span>
                     <?php endif; ?>
                 </td>
             </tr>

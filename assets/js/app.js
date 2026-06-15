@@ -88,14 +88,30 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.btn-confirm-return').forEach(function (btn) {
     btn.addEventListener('click', function (e) {
       e.preventDefault();
-      const url  = this.getAttribute('href') || this.dataset.url;
-      const book = this.dataset.book || 'buku ini';
+      const url      = this.getAttribute('href') || this.dataset.url;
+      const book     = this.dataset.book || 'buku ini';
+      const isOverdue = this.dataset.overdue === '1';
+      const days     = this.dataset.days || 0;
+      const fine     = this.dataset.fine || '';
+
+      let htmlContent = 'Konfirmasi pengembalian <strong>' + book + '</strong>?';
+
+      if (isOverdue) {
+        htmlContent += '<div style="margin-top:12px;padding:10px 14px;background:rgba(190,18,60,.06);border-radius:8px;border-left:3px solid #BE123C">'
+          + '<div style="font-size:.8rem;color:#6B6760;margin-bottom:2px">Keterlambatan</div>'
+          + '<div style="font-size:1rem;font-weight:700;color:#BE123C">' + days + ' hari — Denda: ' + fine + '</div>'
+          + '</div>';
+      } else {
+        htmlContent += '<div style="margin-top:12px;padding:10px 14px;background:rgba(15,118,110,.06);border-radius:8px;border-left:3px solid #0F766E">'
+          + '<div style="font-size:.85rem;color:#0F766E;font-weight:500"><i class="bi bi-check-circle me-1"></i>Tepat waktu — Tidak ada denda</div>'
+          + '</div>';
+      }
 
       Swal.fire({
         title: 'Konfirmasi Pengembalian',
-        html:  'Konfirmasi pengembalian <strong>' + book + '</strong>?',
-        icon:  'question',
-        iconColor: '#0F766E',
+        html:  htmlContent,
+        icon:  isOverdue ? 'warning' : 'question',
+        iconColor: isOverdue ? '#D97706' : '#0F766E',
         showCancelButton: true,
         confirmButtonColor: '#0F766E',
         cancelButtonColor:  '#6B6760',

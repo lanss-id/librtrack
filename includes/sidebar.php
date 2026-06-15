@@ -9,6 +9,7 @@ $navItems = [
     ['page'=>'members',      'href'=>'/libtrack/views/members/index.php',       'icon'=>'bi-people',          'label'=>'Manajemen Anggota'],
     ['page'=>'transactions', 'href'=>'/libtrack/views/transactions/index.php',  'icon'=>'bi-arrow-left-right','label'=>'Peminjaman Aktif'],
     ['page'=>'history',      'href'=>'/libtrack/views/transactions/history.php','icon'=>'bi-clock-history',   'label'=>'Histori Transaksi'],
+    ['page'=>'settings',     'href'=>'/libtrack/views/settings/settings.php',   'icon'=>'bi-gear',            'label'=>'Pengaturan Denda'],
 ];
 ?>
 

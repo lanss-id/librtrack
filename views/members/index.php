@@ -92,6 +92,11 @@ ob_start();
                 </td>
                 <td>
                     <div class="d-flex gap-1">
+                        <a href="/libtrack/views/members/detail.php?id=<?= $m['id'] ?>"
+                           class="btn-lt-action" style="color:var(--teal)"
+                           data-bs-toggle="tooltip" title="Lihat Detail">
+                            <i class="bi bi-eye"></i>
+                        </a>
                         <a href="/libtrack/views/members/edit.php?id=<?= $m['id'] ?>"
                            class="btn-lt-action btn-lt-edit"
                            data-bs-toggle="tooltip" title="Edit">

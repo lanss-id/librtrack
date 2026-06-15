@@ -2,7 +2,7 @@
 /**
  * LibTrack ERP - Transactions: Active Borrow List
  * Shows all currently borrowed books with return action.
- * Phase 4: Return logic updates transaction AND book status atomically.
+ * Includes fine calculation on return.
  */
 
 require_once __DIR__ . '/../../config/database.php';
@@ -11,6 +11,9 @@ require_once __DIR__ . '/../../includes/helpers.php';
 requireAuth();
 
 $pdo = getDB();
+
+// ── Read fine rate for display ───────────────────────────────
+$finePerDay = (float) getSettingValue($pdo, 'fine_per_day', '1000');
 
 // ── Handle Return via GET (confirmed via SweetAlert) ─────────
 if (isset($_GET['action']) && $_GET['action'] === 'return') {
@@ -32,16 +35,26 @@ if (isset($_GET['action']) && $_GET['action'] === 'return') {
             try {
                 $pdo->beginTransaction();
 
-                // 1. Update transaction: set return_date + status
-                $updTxn = $pdo->prepare("UPDATE transactions SET return_date=CURDATE(), status='Dikembalikan', updated_at=NOW() WHERE id=?");
-                $updTxn->execute([$txnId]);
+                // Calculate fine
+                [$overdueDays, $fineAmount] = calculateFine($pdo, $txn['due_date']);
+
+                // 1. Update transaction: set return_date + status + fine_amount
+                $updTxn = $pdo->prepare("UPDATE transactions SET return_date=CURDATE(), status='Dikembalikan', fine_amount=?, updated_at=NOW() WHERE id=?");
+                $updTxn->execute([$fineAmount, $txnId]);
 
                 // 2. Update book status back to 'Tersedia'
                 $updBook = $pdo->prepare("UPDATE books SET status='Tersedia' WHERE id=?");
                 $updBook->execute([$txn['book_id']]);
 
                 $pdo->commit();
-                setFlash('success', 'Buku "' . $txn['book_title'] . '" berhasil dikembalikan.');
+
+                // Build flash message with fine info
+                $msg = 'Buku "' . $txn['book_title'] . '" berhasil dikembalikan.';
+                if ($fineAmount > 0) {
+                    $msg .= ' Denda keterlambatan ' . $overdueDays . ' hari: ' . formatRupiah($fineAmount) . '.';
+                }
+                setFlash('success', $msg);
+
             } catch (Exception $e) {
                 $pdo->rollBack();
                 setFlash('danger', 'Gagal memproses pengembalian. Coba lagi.');
@@ -105,6 +118,7 @@ ob_start();
                     <th>Tgl Pinjam</th>
                     <th>Jatuh Tempo</th>
                     <th>Sisa Hari</th>
+                    <th>Estimasi Denda</th>
                     <th>Status</th>
                     <th>Aksi</th>
                 </tr>
@@ -114,6 +128,7 @@ ob_start();
             <?php
                 $overdueDays = daysOverdue($t['due_date']);
                 $isOverdue   = $overdueDays > 0;
+                $estFine     = $isOverdue ? ($overdueDays * $finePerDay) : 0;
             ?>
             <tr <?= $isOverdue ? 'style="background:rgba(190,18,60,.04)"' : '' ?>>
                 <td class="lt-text-muted lt-text-small"><?= $i + 1 ?></td>
@@ -142,6 +157,15 @@ ob_start();
                 </td>
                 <td>
                     <?php if ($isOverdue): ?>
+                    <span style="color:var(--crimson);font-weight:600;font-size:.85rem">
+                        <?= formatRupiah($estFine) ?>
+                    </span>
+                    <?php else: ?>
+                    <span class="lt-text-muted">—</span>
+                    <?php endif; ?>
+                </td>
+                <td>
+                    <?php if ($isOverdue): ?>
                     <span class="lt-badge lt-badge--overdue">Terlambat</span>
                     <?php else: ?>
                     <span class="lt-badge lt-badge--borrowed">Dipinjam</span>
@@ -151,6 +175,9 @@ ob_start();
                     <a href="/libtrack/views/transactions/index.php?action=return&id=<?= $t['id'] ?>&csrf_token=<?= csrfToken() ?>"
                        class="btn-lt-action btn-lt-return btn-confirm-return"
                        data-book="<?= e($t['book_title']) ?>"
+                       data-overdue="<?= $isOverdue ? '1' : '0' ?>"
+                       data-days="<?= $isOverdue ? abs($overdueDays) : 0 ?>"
+                       data-fine="<?= $isOverdue ? formatRupiah($estFine) : '' ?>"
                        data-bs-toggle="tooltip" title="Kembalikan Buku">
                         <i class="bi bi-arrow-return-left"></i>
                     </a>

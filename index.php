@@ -26,10 +26,12 @@ $stats['total_members'] = (int)$pdo->query("SELECT COUNT(*) FROM members WHERE i
 $stats['active_txn']    = (int)$pdo->query("SELECT COUNT(*) FROM transactions WHERE status='Dipinjam'")->fetchColumn();
 // Overdue transactions (due_date < today AND still borrowed)
 $stats['overdue']       = (int)$pdo->query("SELECT COUNT(*) FROM transactions WHERE status='Dipinjam' AND due_date < CURDATE()")->fetchColumn();
+// Total fines collected
+$stats['total_fines']   = (float)$pdo->query("SELECT COALESCE(SUM(fine_amount),0) FROM transactions")->fetchColumn();
 
 // ── Recent 8 Transactions ─────────────────────────────────────
 $recentStmt = $pdo->query("
-    SELECT t.id, t.borrow_date, t.due_date, t.return_date, t.status,
+    SELECT t.id, t.borrow_date, t.due_date, t.return_date, t.status, t.fine_amount,
            m.name AS member_name, m.member_code,
            b.title AS book_title
     FROM transactions t
